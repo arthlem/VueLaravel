@@ -6,6 +6,8 @@ use App\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
+header('Access-Control-Allow-Origin: http://localhost:8080');
+
 class ProjectControllerJson extends Controller
 {
     /**

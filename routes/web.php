@@ -11,10 +11,8 @@
 |
 */
 
-Route::get('/', function () {
-    return view('index');
-});
+Route::get('/laravel', 'ProjectController@index');
 
-Route::get('{vue_capture?}', function () {
-    return view('index');
-   })->where('vue_capture', '[\/\w\.-]*');
+Route::get('/', function () {
+    return view('index_vue');
+});
