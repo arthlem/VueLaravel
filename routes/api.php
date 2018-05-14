@@ -16,12 +16,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::resource('ideas', 'IdeaController');
-Route::resource('projects', 'ProjectController');
+Route::resource('ideas', 'IdeaControllerJson');
+Route::resource('projects', 'ProjectControllerJson');
 
-Route::get('project/{idProject}/ideas', "IdeaController@projectIdeas");
-Route::post('project/{idProject}/ideas', "IdeaController@addIdeas");
-Route::post('vote', 'VoteController@store');
+Route::get('project/{idProject}/ideas', "IdeaControllerJson@projectIdeas");
+Route::post('project/{idProject}/ideas', "IdeaControllerJson@addIdeas");
+Route::post('vote', 'VoteControllerJson@store');
 
 Route::post('auth/register', 'AuthController@register');
 Route::post('auth/login', 'AuthController@login');

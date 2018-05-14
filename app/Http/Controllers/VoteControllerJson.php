@@ -2,11 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Project;
+use App\Vote;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
 
-class ProjectController extends Controller
+class VoteControllerJson extends Controller
 {
     /**
      * Display a listing of the resource.
@@ -15,10 +14,9 @@ class ProjectController extends Controller
      */
     public function index()
     {
-        return response()->json(Project::all());
+        //
+        return "coucou";
     }
-
-    
 
     /**
      * Show the form for creating a new resource.
@@ -38,22 +36,17 @@ class ProjectController extends Controller
      */
     public function store(Request $request)
     {
-        $project = new Project([
-            'name' => $request->get('name'),
-            'image_link' => $request->get('image_link'),
-            'id_creator' => $request->get('id_creator'),
-        ]);
-        $project->save();
-        return response()->json($project);
+        Vote::create($request->all());
+        return response()->json('Successfully added');
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Project  $project
+     * @param  \App\Vote  $vote
      * @return \Illuminate\Http\Response
      */
-    public function show(Project $project)
+    public function show(Vote $vote)
     {
         //
     }
@@ -61,10 +54,10 @@ class ProjectController extends Controller
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Project  $project
+     * @param  \App\Vote  $vote
      * @return \Illuminate\Http\Response
      */
-    public function edit(Project $project)
+    public function edit(Vote $vote)
     {
         //
     }
@@ -73,29 +66,22 @@ class ProjectController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Project  $project
+     * @param  \App\Vote  $vote
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Vote $vote)
     {
-        $project = Project::find($id);
-
-        $project->name = $request->get('name');
-        $project->image_link = $request->get('image_link');
-       
-        $project->save();
-
-        return "Success updating project #" . $project->id;
+        //
     }
 
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Project  $project
+     * @param  \App\Vote  $vote
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Vote $vote)
     {
-        Project::destroy($id);
+        //
     }
 }

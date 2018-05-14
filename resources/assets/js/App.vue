@@ -1,22 +1,21 @@
 <template>
     <v-app>
-        <transition name="fade">
-            <router-view></router-view>
-        </transition>
+        <router-view></router-view>
     </v-app>
 </template>
 
 <style>
-.fade-enter-active,
-.fade-leave-active {
-  transition: opacity 0.5s;
-}
-.fade-enter,
-.fade-leave-active {
-  opacity: 0;
-}
+    .fade-enter-active,
+    .fade-leave-active {
+        transition: opacity 0.5s;
+    }
+    
+    .fade-enter,
+    .fade-leave-active {
+        opacity: 0;
+    }
 </style>
 
 <script>
-export default {};
+    export default {};
 </script>

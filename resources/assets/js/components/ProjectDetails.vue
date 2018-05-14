@@ -1,37 +1,59 @@
 <template>
-    <v-container grid-list-xl>
-        <h1>Toutes les idées du projet</h1>
-        <v-layout row align-center wrap>
-            <v-flex xs12 md8>
-                <v-text-field id="idea_text" v-model="idea.text" label="Idea"></v-text-field>
-            </v-flex>
-            <v-flex xs12 md4 justify-end>
-                <v-btn color="primary" @click="addIdea">Ajouter une idée</v-btn>
-            </v-flex>
-        </v-layout>
+    <v-layout>
+        <v-toolbar color="primary" flat dark fixed>
+            <v-btn flat to="/"><v-icon>keyboard_backspace</v-icon></v-btn>
+            <v-toolbar-title>Toutes les idées du projet</v-toolbar-title>
+            <v-spacer></v-spacer>
     
-        <v-alert @click="error = false" type="error" :value="error" transition="slide-y-transition" dismissible>
-            {{errorMessage}}
-            <v-btn v-if="!$auth.check()" :to="{ name: 'login' }" flat>Se connecter</v-btn>
-        </v-alert>
-        <v-progress-linear v-if="loading" :indeterminate="true"></v-progress-linear>
-        <ul class="list-group">
-            <li v-for="idea in ideas" v-bind:key="idea.id" class="list-group-item">
-                <v-icon class="glyphicon" @click="upVote(idea)">keyboard_arrow_up</v-icon>
-                <span class="label label-primary">{{ idea.count | formatCount }}</span>
-                <v-icon class="glyphicon" @click="downVote(idea)">keyboard_arrow_down</v-icon>
-                <a>{{ idea.text }}</a>
-                <div v-if="isCreator(idea.id_creator)" class="actions">
-                    <v-btn icon ripple @click.stop="showUpdate(idea)">
-                        <v-icon>create</v-icon>
-                    </v-btn>
-                    <v-btn icon ripple @click="deleteIdea(idea)">
-                        <v-icon color="red" @click="deleteIdea(idea)">delete</v-icon>
-                    </v-btn>
-                </div>
-            </li>
-        </ul>
+            <v-toolbar-items>
     
+                <v-btn flat :to="{ name: 'login' }" v-if="!$auth.check()">
+                    Login
+                </v-btn>
+                <v-btn flat :to="{ name: 'register' }" v-if="!$auth.check()">Register
+                </v-btn>
+                <v-btn flat v-if="$auth.check()" class="pull-right" @click.prevent="$auth.logout()">
+                    Logout
+                </v-btn>
+            </v-toolbar-items>
+    
+        </v-toolbar>
+        <v-container grid-list-xl class="margin_top">
+            <v-layout row align-center wrap>
+                <v-flex xs12 md8>
+                    <v-text-field id="idea_text" v-model="idea.text" label="Idea"></v-text-field>
+                </v-flex>
+                <v-flex xs12 md4 justify-end>
+                    <v-btn color="primary" @click="addIdea">Ajouter une idée</v-btn>
+                </v-flex>
+            </v-layout>
+    
+            <v-alert @click="error = false" type="error" :value="error" transition="slide-y-transition" dismissible>
+                {{errorMessage}}
+                <v-btn v-if="!$auth.check()" :to="{ name: 'login' }" flat>Se connecter</v-btn>
+            </v-alert>
+            <v-progress-linear v-if="loading" :indeterminate="true"></v-progress-linear>
+            <v-flex v-if="ideas.length == 0">
+                <h3>Aucune idées pour l'instant</h3>
+            </v-flex>
+            <ul v-else class="list-group">
+                <li v-for="idea in ideas" v-bind:key="idea.id" class="list-group-item">
+                    <v-icon class="glyphicon" @click="upVote(idea)">keyboard_arrow_up</v-icon>
+                    <span class="label label-primary">{{ idea.count | formatCount }}</span>
+                    <v-icon class="glyphicon" @click="downVote(idea)">keyboard_arrow_down</v-icon>
+                    <a>{{ idea.text }}</a>
+                    <div v-if="isCreator(idea.id_creator)" class="actions">
+                        <v-btn icon small ripple @click.stop="showUpdate(idea)">
+                            <v-icon>create</v-icon>
+                        </v-btn>
+                        <v-btn icon small ripple @click="deleteIdea(idea)">
+                            <v-icon color="red" @click="deleteIdea(idea)">delete</v-icon>
+                        </v-btn>
+                    </div>
+                </li>
+            </ul>
+    
+        </v-container>
         <v-dialog v-model="updateDialog" fullscreen hide-overlay transition="dialog-bottom-transition" scrollable>
             <v-card tile>
                 <v-toolbar card dark color="primary">
@@ -43,7 +65,7 @@
                     <v-toolbar-items>
                         <v-btn dark flat @click.native="update()">Sauver</v-btn>
                     </v-toolbar-items>
-                    
+    
                 </v-toolbar>
                 <v-card-text>
                     <v-layout>
@@ -56,8 +78,7 @@
                 <div style="flex: 1 1 auto;"></div>
             </v-card>
         </v-dialog>
-    
-    </v-container>
+    </v-layout>
 </template>
 
 <script>
@@ -86,27 +107,26 @@
                     "/ideas";
                 this.axios.get(uri).then(response => {
                     this.ideas = response.data;
-                    if (this.ideas.length == 0) {
-                        console.log("empty");
-                    }
                     this.loading = false;
                 });
             },
-            showUpdate(idea){
+            showUpdate(idea) {
                 this.updateDialog = true;
                 this.updatedIdea = idea;
             },
-            update(){
+            update() {
                 this.updateDialog = false;
                 let uri = `http://localhost:8000/api/ideas/${this.updatedIdea.id}`;
-                this.axios.put(uri, {text:this.updatedIdea.text}).then(response => {
+                this.axios.put(uri, {
+                    text: this.updatedIdea.text
+                }).then(response => {
                     console.log(response);
                 });
             },
             deleteIdea(idea) {
                 let uri = `http://localhost:8000/api/ideas/${idea.id}`;
-                let id = this.ideas.map(item => item.id).indexOf(idea.id);
-                this.ideas.splice(id, 1);
+                let index = this.ideas.map(item => item.id).indexOf(idea.id);
+                this.ideas.splice(index, 1);
                 this.axios.delete(uri);
             },
             displayNotification() {
@@ -199,10 +219,6 @@
         color: orange;
     }
     
-    
-    /* some simple transitions to make the upvote and downvote
-                                                                                                                    buttons fade in as a visual cue for the user */
-    
     .glyphicon {
         opacity: 1;
         transition: opacity 0.25s ease-in-out;
@@ -239,5 +255,10 @@
     .actions {
         float: right;
     }
+
+    .margin_top {
+        margin-top: 70px;
+    }
 </style>
+
 

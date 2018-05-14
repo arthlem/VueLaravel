@@ -6,7 +6,7 @@ use App\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class ProjectController extends Controller
+class ProjectControllerJson extends Controller
 {
     /**
      * Display a listing of the resource.
