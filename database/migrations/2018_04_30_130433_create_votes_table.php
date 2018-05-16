@@ -22,7 +22,7 @@ class CreateVotesTable extends Migration
         });
         Schema::table('votes', function (Blueprint $table) {
             $table->foreign('id_user')->references('id')->on('users');
-            $table->foreign('id_idea')->references('id')->on('ideas');
+            $table->foreign('id_idea')->references('id')->on('ideas')->onDelete('cascade');
         });
     }
 

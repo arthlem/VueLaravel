@@ -9,44 +9,13 @@ use Illuminate\Support\Facades\DB;
 class IdeaController extends Controller
 {
     /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        return response()->json(Idea::all());
-    }
-
-    /**
-     * La liste des idées d'un projet.
-     *
-     * @return les idées en format json
-     */
-    public function projectIdeas($projectId)
-    {
-        return DB::table('ideas as i')
-            ->leftJoin('votes as v', 'v.id_idea', '=', 'i.id')
-            ->selectRaw('i.id, i.text, i.id_creator, SUM(v.value) as count')
-            ->where('i.id_project', '=', $projectId)
-            ->groupBy('id', 'text', 'id_creator')
-            ->get();
-    }
-
-    public function addIdeas(Request $request, $projectId){
-        $idea = Idea::create($request->all());
-        return response()->json('Successfully added');
-    }
-
-
-    /**
      * Show the form for creating a new resource.
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create($id)
     {
-        //
+        return view('ideas.create')->with('project_id', $id);
     }
 
     /**
@@ -55,26 +24,16 @@ class IdeaController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request, $projectId)
+    public function store(Request $request)
     {
+
         $idea = new Idea([
             'text' => $request->get('text'),
-            'id_creator' => $request->get('id_creator'),
+            'id_creator' => auth()->user()->id,
             'id_project' => $request->get('id_project'),
         ]);
         $idea->save();
-        return response()->json($idea);
-    }
-
-    /**
-     * Display the specified resource.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
+        return redirect('/projects/' . $request->get('id_project'))->with('success', 'l\'idée a bien été créée');
     }
 
     /**
@@ -85,7 +44,12 @@ class IdeaController extends Controller
      */
     public function edit($id)
     {
-        //
+        $idea = Idea::find($id);
+        // Check for correct user
+        if(auth()->user()->id !==$idea->id_creator){
+            return redirect('/projects')->with('error', 'Pas autorisé');
+        }
+        return view('ideas.edit')->with('idea', $idea);
     }
 
     /**
@@ -97,13 +61,18 @@ class IdeaController extends Controller
      */
     public function update(Request $request, $id)
     {
+
+        $this->validate($request, [
+            'text' => 'required'
+        ]);
+
         $idea = Idea::find($id);
 
         $idea->text = $request->get('text');
 
         $idea->save();
 
-        return "Success updating idea #" . $idea->id;
+        return redirect('/projects/'.$idea->id_project)->with('success', 'idée mise à jour');
     }
 
     /**
@@ -115,6 +84,14 @@ class IdeaController extends Controller
     public function destroy($id)
     {
         //
-        Idea::destroy($id);
+        $idea = Idea::find($id);
+        $id_project = $idea->id_project;
+        // Check for correct user
+        if(auth()->user()->id !==$idea->id_creator){
+            return redirect('/projects')->with('error', 'Pas autorisé');
+        }
+        
+        $idea->delete();
+        return redirect('/projects/'.$id_project)->with('success', 'idée supprimée');
     }
 }

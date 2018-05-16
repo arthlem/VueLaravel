@@ -8,8 +8,6 @@ use Auth;
 use Illuminate\Http\Request;
 use JWTAuth;
 
-header('Access-Control-Allow-Origin: http://localhost:8080');
-
 class AuthController extends Controller
 {
     //

@@ -18,6 +18,10 @@ class User extends Authenticatable
         'name', 'email', 'password',
     ];
 
+    protected $table = 'users';
+    
+    public $primaryKey = 'id';
+
     /**
      * The attributes that should be hidden for arrays.
      *
@@ -26,4 +30,12 @@ class User extends Authenticatable
     protected $hidden = [
         'password', 'remember_token',
     ];
+
+    public function projects(){
+        return $this->hasMany('App\Project');
+    }
+
+    public function ideas(){
+        return $this->hasMany('App\Idea');
+    }
 }

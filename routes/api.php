@@ -22,13 +22,13 @@ Route::resource('projects', 'ProjectControllerJson');
 Route::get('project/{idProject}/ideas', "IdeaControllerJson@projectIdeas");
 Route::post('project/{idProject}/ideas', "IdeaControllerJson@addIdeas");
 Route::post('vote', 'VoteControllerJson@store');
-
 Route::post('auth/register', 'AuthController@register');
 Route::post('auth/login', 'AuthController@login');
-Route::group(['middleware' => 'jwt.auth'], function () {
+
+Route::group(['middleware' => ['jwt.auth']], function () {
     Route::get('auth/user', 'AuthController@user');
     Route::post('auth/logout', 'AuthController@logout');
 });
-Route::group(['middleware' => 'jwt.refresh'], function () {
+Route::group(['middleware' => ['jwt.refresh']], function () {
     Route::get('auth/refresh', 'AuthController@refresh');
 });
