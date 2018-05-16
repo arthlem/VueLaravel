@@ -6,9 +6,6 @@ use App\Idea;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-header('Access-Control-Allow-Origin', '*');
-header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
-
 class IdeaControllerJson extends Controller
 {
     /**

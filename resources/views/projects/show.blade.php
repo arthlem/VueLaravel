@@ -29,7 +29,7 @@
                 <td class="noborder align-middle">
                     <a class="ml-3 mr-3">{{ $idea->text }}</a>
                 </td>
-                @if(auth()->user()->id == $idea->id_creator)
+                @if(Auth::check() && auth()->user()->id == $idea->id_creator)
                     <td class="noborder align-middle">
                         {!!Form::open(['action' => ['IdeaController@destroy', $idea->id], 'method' => 'POST', 'class' => 'pull-right'])!!}
                             {{Form::hidden('_method', 'DELETE')}}
