@@ -1,0 +1,701 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Boite \u00e0 id\u00e9e",
+        "version": "1.0.0"
+    },
+    "basePath": "/api/v1",
+    "paths": {
+        "/auth/register": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Inscription",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "description": "Le nom de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "default": "Test"
+                                }
+                            }
+                        },
+                        "type": "string"
+                    },
+                    {
+                        "name": "email",
+                        "in": "body",
+                        "description": "L'email de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "email": {
+                                    "type": "string",
+                                    "default": "Test"
+                                }
+                            }
+                        },
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "body",
+                        "description": "Le mot de passe de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "password": {
+                                    "type": "string",
+                                    "default": "Test"
+                                }
+                            }
+                        },
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retourne les donn\u00e9es de l'utilisateur",
+                        "schema": {
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "default": "success"
+                                },
+                                "data": {
+                                    "$ref": "#/definitions/User"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/login": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Connexion",
+                "parameters": [
+                    {
+                        "name": "email",
+                        "in": "body",
+                        "description": "L'email de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "email": {
+                                    "type": "string",
+                                    "default": "Test"
+                                }
+                            }
+                        },
+                        "type": "string"
+                    },
+                    {
+                        "name": "password",
+                        "in": "body",
+                        "description": "Le mot de passe de l'utilisateur",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "password": {
+                                    "type": "string",
+                                    "default": "Test"
+                                }
+                            }
+                        },
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success",
+                        "schema": {
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "default": "success"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/user": {
+            "get": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "R\u00e9cup\u00e9rer les donn\u00e9es de l'utilisateur",
+                "parameters": [
+                    {
+                        "name": "Authorization",
+                        "in": "header",
+                        "description": "JWT token",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "bearer": {
+                                    "type": "string",
+                                    "default": "Test"
+                                }
+                            }
+                        },
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retourne les donn\u00e9es de l'utilisateur",
+                        "schema": {
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "default": "success"
+                                },
+                                "data": {
+                                    "$ref": "#/definitions/User"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/auth/logout": {
+            "post": {
+                "tags": [
+                    "auth"
+                ],
+                "summary": "Logout",
+                "responses": {
+                    "200": {
+                        "description": "Retourne les donn\u00e9es de l'utilisateur",
+                        "schema": {
+                            "properties": {
+                                "status": {
+                                    "type": "string",
+                                    "default": "success"
+                                },
+                                "msg": {
+                                    "type": "string",
+                                    "default": "Logged out successfully"
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "/ideas": {
+            "post": {
+                "tags": [
+                    "ideas"
+                ],
+                "summary": "Ajouter une id\u00e9e",
+                "parameters": [
+                    {
+                        "name": "text",
+                        "in": "body",
+                        "description": "Le texte de l'id\u00e9e",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "text": {
+                                    "type": "string",
+                                    "default": "Test"
+                                }
+                            }
+                        },
+                        "type": "string"
+                    },
+                    {
+                        "name": "id_project",
+                        "in": "body",
+                        "description": "L'id du projet",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "id_project": {
+                                    "type": "integer",
+                                    "default": "Test"
+                                }
+                            }
+                        },
+                        "type": "integer"
+                    },
+                    {
+                        "name": "id_creator",
+                        "in": "body",
+                        "description": "L'id de l'utilisateur qui ajoute le projet",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "id_creator": {
+                                    "type": "integer",
+                                    "default": "Test"
+                                }
+                            }
+                        },
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retourne le projet avec un id"
+                    }
+                }
+            }
+        },
+        "/ideas/{id}": {
+            "put": {
+                "tags": [
+                    "ideas"
+                ],
+                "summary": "Modifier une id\u00e9e",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "L'id de l'id\u00e9e",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "default": "Test"
+                                }
+                            }
+                        },
+                        "type": "integer"
+                    },
+                    {
+                        "name": "text",
+                        "in": "body",
+                        "description": "Le texte de l'id\u00e9e",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "text": {
+                                    "type": "string",
+                                    "default": "Test"
+                                }
+                            }
+                        },
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "ideas"
+                ],
+                "summary": "Supprimer une id\u00e9e via son id",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "L'id de l'id\u00e9e \u00e0 supprimer",
+                        "required": true,
+                        "type": "integer",
+                        "minimum": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Id\u00e9e supprim\u00e9 avec succ\u00e8s"
+                    },
+                    "404": {
+                        "description": "Id\u00e9e introuvable"
+                    }
+                }
+            }
+        },
+        "/projects": {
+            "get": {
+                "tags": [
+                    "projects"
+                ],
+                "summary": "R\u00e9cup\u00e9rer tous les projets",
+                "responses": {
+                    "200": {
+                        "description": "Tous les projets"
+                    }
+                }
+            },
+            "post": {
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Ajouter un projet",
+                "parameters": [
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "description": "Le nom du projet",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "default": "Test"
+                                }
+                            }
+                        },
+                        "type": "string"
+                    },
+                    {
+                        "name": "image_link",
+                        "in": "body",
+                        "description": "Le lien de l'image du projet",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "image_link": {
+                                    "type": "string",
+                                    "default": "Test"
+                                }
+                            }
+                        },
+                        "type": "string"
+                    },
+                    {
+                        "name": "id_creator",
+                        "in": "body",
+                        "description": "L'id de l'utilisateur qui ajoute le projet",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "id_creator": {
+                                    "type": "integer",
+                                    "default": "Test"
+                                }
+                            }
+                        },
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retourne le projet avec un id"
+                    }
+                }
+            }
+        },
+        "/projects/{id}": {
+            "get": {
+                "tags": [
+                    "projects"
+                ],
+                "summary": "R\u00e9cup\u00e9rer un projet via son id",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "L'id du projet",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "default": "1"
+                                }
+                            }
+                        },
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Retourne le projet correspondant \u00e0 l'id en param\u00e8tre"
+                    }
+                }
+            },
+            "put": {
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Modifier un projet",
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "L'id du projet",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "id": {
+                                    "type": "integer",
+                                    "default": "1"
+                                }
+                            }
+                        },
+                        "type": "integer"
+                    },
+                    {
+                        "name": "name",
+                        "in": "body",
+                        "description": "Le nom du projet",
+                        "required": false,
+                        "schema": {
+                            "properties": {
+                                "name": {
+                                    "type": "string",
+                                    "default": "Test"
+                                }
+                            }
+                        },
+                        "type": "string"
+                    },
+                    {
+                        "name": "image_link",
+                        "in": "body",
+                        "description": "Le lien de l'image du projet",
+                        "required": false,
+                        "schema": {
+                            "properties": {
+                                "image_link": {
+                                    "type": "string",
+                                    "default": "Test"
+                                }
+                            }
+                        },
+                        "type": "string"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Success"
+                    }
+                }
+            },
+            "delete": {
+                "tags": [
+                    "projects"
+                ],
+                "summary": "Supprimer un projet via son id",
+                "produces": [
+                    "application/json"
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "L'id du projet \u00e0 supprimer",
+                        "required": true,
+                        "type": "integer",
+                        "minimum": 1
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Projet supprim\u00e9 avec succ\u00e8s"
+                    },
+                    "404": {
+                        "description": "Projet introuvable"
+                    }
+                }
+            }
+        },
+        "/votes": {
+            "post": {
+                "tags": [
+                    "votes"
+                ],
+                "summary": "Voter",
+                "parameters": [
+                    {
+                        "name": "value",
+                        "in": "body",
+                        "description": "valeur positive ou valeur n\u00e9gative",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "value": {
+                                    "type": "integer",
+                                    "default": "Test"
+                                }
+                            }
+                        },
+                        "type": "integer"
+                    },
+                    {
+                        "name": "id_idea",
+                        "in": "body",
+                        "description": "L'id de l'id\u00e9e",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "id_idea": {
+                                    "type": "integer",
+                                    "default": "Test"
+                                }
+                            }
+                        },
+                        "type": "integer"
+                    },
+                    {
+                        "name": "id_user",
+                        "in": "body",
+                        "description": "L'id de l'utilisateur qui vote",
+                        "required": true,
+                        "schema": {
+                            "properties": {
+                                "id_user": {
+                                    "type": "integer",
+                                    "default": "Test"
+                                }
+                            }
+                        },
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Sucess"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "Idea": {
+            "required": [
+                "text",
+                "id_creator",
+                "id_project"
+            ],
+            "properties": {
+                "id": {
+                    "description": "l'id' de l'id\u00e9e",
+                    "type": "integer"
+                },
+                "text": {
+                    "description": "le texte de l'id\u00e9e",
+                    "type": "string"
+                },
+                "id_creator": {
+                    "description": "l'id du cre\u00e9ateur",
+                    "type": "integer"
+                },
+                "id_project": {
+                    "description": "l'id du projet",
+                    "type": "integer"
+                }
+            }
+        },
+        "Project": {
+            "required": [
+                "name",
+                "image_link",
+                "id_creator"
+            ],
+            "properties": {
+                "id": {
+                    "description": "l'id' du projet",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "le nom du projet",
+                    "type": "string"
+                },
+                "image_link": {
+                    "description": "le lien vers l'image",
+                    "type": "string"
+                },
+                "id_creator": {
+                    "description": "l'id du cre\u00e9ateur",
+                    "type": "integer"
+                }
+            }
+        },
+        "User": {
+            "required": [
+                "name",
+                "email",
+                "password"
+            ],
+            "properties": {
+                "id": {
+                    "description": "l'id' du user",
+                    "type": "integer"
+                },
+                "name": {
+                    "description": "le nom du user",
+                    "type": "string"
+                },
+                "email": {
+                    "description": "l'email du user",
+                    "type": "string"
+                },
+                "password": {
+                    "description": "le mot de passe du user",
+                    "type": "integer"
+                }
+            }
+        },
+        "Vote": {
+            "required": [
+                "id_user",
+                "id_idea",
+                "value"
+            ],
+            "properties": {
+                "id": {
+                    "description": "l'id du vote",
+                    "type": "integer"
+                },
+                "value": {
+                    "description": "+1 pour un vote positif ou -1 pour un vote n\u00e9gatif",
+                    "type": "string"
+                },
+                "id_user": {
+                    "description": "l'id du voteur",
+                    "type": "integer"
+                },
+                "id_idea": {
+                    "description": "l'id de l'id\u00e9e",
+                    "type": "integer"
+                }
+            }
+        }
+    },
+    "responses": {
+        "400": {
+            "description": "En cas d'erreur",
+            "schema": {
+                "properties": {
+                    "status": {
+                        "type": "string",
+                        "default": "success"
+                    },
+                    "error": {
+                        "type": "string",
+                        "default": "invalid.credential"
+                    },
+                    "msg": {
+                        "type": "string",
+                        "default": "Invalid Credentials."
+                    }
+                }
+            }
+        }
+    }
+}

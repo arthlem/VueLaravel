@@ -41,12 +41,12 @@
           @else
             @if (isset($route) && $route == 'projects')
               <li class="nav-item">
-                <a class="btn btn-success" href="/projects/create"><i class="fa fa-plus"> Ajouter un projet</i></a>
+                <a class="btn btn-success" href="/projects/create"><i class="fa fa-plus"></i> Ajouter un projet</a>
               </li>
             @endif
             @if (isset($route) && $route == 'projects_details')
               <li class="nav-item">
-                <a class="btn btn-success" href="/ideas/create/{{$project_id}}"><i class="fa fa-plus"> Ajouter une idée</i></a>
+                <a class="btn btn-success" href="/ideas/create/{{$project_id}}"><i class="fa fa-plus"></i> Ajouter une idée</a>
               </li>
             @endif
             <li class="ml-4 nav-item">

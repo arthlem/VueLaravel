@@ -10463,3 +10463,11 @@ body {
 .border_bottom{
   border-bottom: solid 1px lightgray;
 }
+
+.card-img-overlay-custom{
+  position: absolute;
+  top: 0;
+  right: 0;
+  left: 0;
+  padding: 1rem;
+}

@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\DB;
 
 class ProjectController extends Controller
 {
@@ -19,8 +18,6 @@ class ProjectController extends Controller
         $projects = Project::all();
         return view('projects.index')->with('projects', $projects);
     }
-
-    
 
     /**
      * Show the form for creating a new resource.
@@ -43,10 +40,10 @@ class ProjectController extends Controller
 
         $this->validate($request, [
             'name' => 'required',
-            'image' => 'image|nullable|max:1999'
+            'image' => 'image|nullable|max:1999',
         ]);
 
-        if($request->hasFile('image')){
+        if ($request->hasFile('image')) {
             // Get filename with the extension
             $filenameWithExt = $request->file('image')->getClientOriginalName();
             // Get just filename
@@ -54,7 +51,7 @@ class ProjectController extends Controller
             // Get just ext
             $extension = $request->file('image')->getClientOriginalExtension();
             // Filename to store
-            $fileNameToStore= $filename.'_'.time().'.'.$extension;
+            $fileNameToStore = $filename . '_' . time() . '.' . $extension;
             // Upload Image
             $path = $request->file('image')->storeAs('public/images', $fileNameToStore);
         } else {
@@ -93,7 +90,7 @@ class ProjectController extends Controller
     {
         $project = Project::find($id);
         // Check for correct user
-        if(auth()->user()->id !==$project->id_creator){
+        if (auth()->user()->id !== $project->id_creator) {
             return redirect('/projects')->with('error', 'Pas autorisé');
         }
         return view('projects.edit')->with('project', $project);
@@ -110,12 +107,12 @@ class ProjectController extends Controller
     {
 
         $this->validate($request, [
-            'name' => 'required'
+            'name' => 'required',
         ]);
 
         $project = Project::find($id);
 
-        if($request->hasFile('image')){
+        if ($request->hasFile('image')) {
             // Get filename with the extension
             $filenameWithExt = $request->file('image')->getClientOriginalName();
             // Get just filename
@@ -123,16 +120,16 @@ class ProjectController extends Controller
             // Get just ext
             $extension = $request->file('image')->getClientOriginalExtension();
             // Filename to store
-            $fileNameToStore= $filename.'_'.time().'.'.$extension;
+            $fileNameToStore = $filename . '_' . time() . '.' . $extension;
             // Upload Image
             $path = $request->file('image')->storeAs('public/images', $fileNameToStore);
         }
 
         $project->name = $request->get('name');
-        if($request->hasFile('cover_image')){
+        if ($request->hasFile('cover_image')) {
             $project->image_link = $fileNameToStore;
         }
-       
+
         $project->save();
 
         return redirect('/projects')->with('success', 'Projet mis à jour');
@@ -147,15 +144,13 @@ class ProjectController extends Controller
     public function destroy($id)
     {
         $project = Project::find($id);
-        // Check for correct user
-        if(auth()->user()->id !==$project->id_creator){
+        if (auth()->user()->id !== $project->id_creator) {
             return redirect('/projects')->with('error', 'Pas autorisé');
         }
-        if($project->image_link != 'noimage.jpg'){
-            // Delete Image
-            Storage::delete('public/images/'.$project->image_link);
+        if ($project->image_link != 'noimage.jpg') {
+            Storage::delete('public/images/' . $project->image_link);
         }
-        
+
         $project->delete();
         return redirect('/projects')->with('success', 'Projet supprimé');
     }

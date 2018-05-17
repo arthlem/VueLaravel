@@ -17,8 +17,8 @@ Route::get('/', 'PageController@index');
 
 Route::resource('projects', 'ProjectController');
 
-Route::get('/ideas/create/{id}', 'IdeaController@create');
+Route::resource('ideas', 'IdeaController');
+
+Route::get('ideas/create/{id}', 'IdeaController@create');
 
 Route::resource('votes', 'VoteController');
-
-Route::resource('ideas', 'IdeaController');

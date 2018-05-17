@@ -16,13 +16,12 @@ Route::middleware('auth:api')->get('/user', function (Request $request) {
     return $request->user();
 });
 
-Route::middleware('cors')->group(function () {
-    Route::resource('ideas', 'IdeaControllerJson');
-    Route::resource('projects', 'ProjectControllerJson');
-
-    Route::get('project/{idProject}/ideas', "IdeaControllerJson@projectIdeas");
-    Route::post('project/{idProject}/ideas', "IdeaControllerJson@addIdeas");
-    Route::post('vote', 'VoteControllerJson@store');
+Route::group(array('prefix' => 'v1', 'middleware' => ['cors']), function () {
+    Route::group(['middleware' => ['auth:api']], function() {
+        Route::resource('ideas', 'IdeaControllerJson');
+        Route::resource('projects', 'ProjectControllerJson');
+        Route::post('vote', 'VoteControllerJson@store');
+    });
 
     Route::post('auth/register', 'AuthController@register');
     Route::post('auth/login', 'AuthController@login');

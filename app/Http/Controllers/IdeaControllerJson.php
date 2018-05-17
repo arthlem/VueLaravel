@@ -8,91 +8,47 @@ use Illuminate\Support\Facades\DB;
 
 class IdeaControllerJson extends Controller
 {
+
     /**
-     * Display a listing of the resource.
+     * @SWG\Post(
+     *   path="/ideas",
+     *   tags={"ideas"},
+     *   summary="Ajouter une idée",
+     *   @SWG\Parameter(name="text",required=true,in="body",description="Le texte de l'idée",type="string",@SWG\Schema(@SWG\Property(property="text",type="string",default="Test"))),
+     *   @SWG\Parameter(name="id_project",required=true,in="body",description="L'id du projet",type="integer",@SWG\Schema(@SWG\Property(property="id_project",type="integer",default="Test"))),
+     *   @SWG\Parameter(name="id_creator",required=true,in="body",description="L'id de l'utilisateur qui ajoute le projet",type="integer",@SWG\Schema(@SWG\Property(property="id_creator",type="integer",default="Test"))),
+     *   @SWG\Response(response=200, description="Retourne le projet avec un id")
+     * )
      *
+     * Créer un projet
+     *
+     * @param  \Illuminate\Http\Request requête contenant toutes les informations pour créer un projet
      * @return \Illuminate\Http\Response
      */
-    public function index()
-    {
-        return response()->json(Idea::all());
-    }
-
-    /**
-     * La liste des idées d'un projet.
-     *
-     * @return les idées en format json
-     */
-    public function projectIdeas($projectId)
-    {
-        return DB::table('ideas as i')
-            ->leftJoin('votes as v', 'v.id_idea', '=', 'i.id')
-            ->selectRaw('i.id, i.text, i.id_creator, SUM(v.value) as count')
-            ->where('i.id_project', '=', $projectId)
-            ->groupBy('id', 'text', 'id_creator')
-            ->get();
-    }
-
-    public function addIdeas(Request $request, $projectId){
-        $idea = Idea::create($request->all());
-        return response()->json('Successfully added');
-    }
-
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request, $projectId)
+    public function store(Request $request)
     {
         $idea = new Idea([
-            'text' => $request->get('text'),
-            'id_creator' => $request->get('id_creator'),
-            'id_project' => $request->get('id_project'),
+            'text' => $request->text,
+            'id_creator' => $request->id_creator,
+            'id_project' => $request->id_project,
         ]);
         $idea->save();
         return response()->json($idea);
     }
 
     /**
-     * Display the specified resource.
+     * @SWG\Put(
+     *   path="/ideas/{id}",
+     *   tags={"ideas"},
+     *   summary="Modifier une idée",
+     *   @SWG\Parameter(name="id",required=true,in="path",description="L'id de l'idée",type="integer",@SWG\Schema(@SWG\Property(property="id",type="integer",default="Test"))),
+     *   @SWG\Parameter(name="text",required=true,in="body",description="Le texte de l'idée",type="string",@SWG\Schema(@SWG\Property(property="text",type="string",default="Test"))),
+     *   @SWG\Response(response=200, description="Success")
+     * )
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function show($id)
-    {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
+     * Modifier une idée via son id
      *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
-     */
-    public function edit($id)
-    {
-        //
-    }
-
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
+     * @param $id l'id du projet
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, $id)
@@ -107,14 +63,30 @@ class IdeaControllerJson extends Controller
     }
 
     /**
-     * Remove the specified resource from storage.
-     *
-     * @param  int  $id
-     * @return \Illuminate\Http\Response
+     * @SWG\Delete(path="/ideas/{id}",
+     *   tags={"ideas"},
+     *   summary="Supprimer une idée via son id",
+     *   produces={"application/json"},
+     *   @SWG\Parameter(
+     *     name="id",
+     *     in="path",
+     *     description="L'id de l'idée à supprimer",
+     *     required=true,
+     *     type="integer",
+     *     minimum=1.0
+     *   ),
+     *   @SWG\Response(response=200, description="Idée supprimé avec succès"),
+     *   @SWG\Response(response=404, description="Idée introuvable")
+     * )
      */
     public function destroy($id)
     {
-        //
-        Idea::destroy($id);
+        $idea = Idea::find($id);
+        if ($idea == null) {
+            return response()->json('L\'idée n\'existe pas', 404);
+        } else {
+            $idea->delete();
+            return response()->json('Idée supprimée', 200);
+        }
     }
 }
