@@ -4,10 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Vote;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 
 class VoteControllerJson extends Controller
 {
-     /**
+    /**
      * @SWG\Post(
      *   path="/votes",
      *   tags={"votes"},
@@ -25,8 +26,23 @@ class VoteControllerJson extends Controller
      */
     public function store(Request $request)
     {
-        Vote::create($request->all());
-        return response()->json('Successfully added');
+        if (Auth::check()) {
+            $validatedData = $request->validate([
+                'value' => 'required',
+                'id_user' => 'required',
+                'id_idea' => 'required',
+            ]);
+
+            if ($validatedData->errors()) {
+                return $validatedData->errors()->toJson();
+            }
+
+            Vote::create($request->all());
+            return response()->json('Successfully added', 200);
+        } else {
+            return response()->json('Vous n\'êtes pas authorisé à faire ça', 403);
+        }
+
     }
 
 }

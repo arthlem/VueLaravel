@@ -5,7 +5,6 @@ namespace App\Http\Controllers;
 use App\Project;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Storage;
 
 class ProjectControllerJson extends Controller
 {
@@ -44,13 +43,27 @@ class ProjectControllerJson extends Controller
      */
     public function store(Request $request)
     {
-        $project = new Project([
-            'name' => $request->get('name'),
-            'image_link' => $request->get('image_link'),
-            'id_creator' => $request->get('id_creator'),
-        ]);
-        $project->save();
-        return response()->json($project);
+        if (Auth::check()) {
+            $validatedData = $request->validate([
+                'name' => 'required',
+                'image_link' => 'required',
+                'id_creator' => 'required',
+            ]);
+
+            if ($validatedData->errors()) {
+                return $validatedData->errors()->toJson();
+            }
+
+            $project = new Project([
+                'name' => $request->get('name'),
+                'image_link' => $request->get('image_link'),
+                'id_creator' => $request->get('id_creator'),
+            ]);
+            $project->save();
+            return response()->json($project);
+        } else {
+            return response()->json('Vous n\'êtes pas authorisé à faire ça', 403);
+        }
     }
 
     /**
@@ -70,16 +83,21 @@ class ProjectControllerJson extends Controller
     public function show($id)
     {
         $project = Project::find($id);
-        $ideas = $project->ideas;
+        if ($project == null) {
+            return response()->json('Le projet n\'existe pas', 404);
+        } else {
+            $ideas = $project->ideas;
 
-        foreach ($ideas as $idea) {
-            $idea->count = $idea->votes()->count();
+            foreach ($ideas as $idea) {
+                $idea->count = $idea->votes()->count();
+            }
+
+            return response()->json([
+                'project' => $project,
+                'ideas' => $ideas,
+            ]);
         }
 
-        return response()->json([
-            'project' => $project,
-            'ideas' => $ideas,
-        ]);
     }
 
     /**
@@ -100,20 +118,23 @@ class ProjectControllerJson extends Controller
      */
     public function update(Request $request, $id)
     {
-        $project = Project::find($id);
-        if ($request->user()->id === $project->id_creator) {
-            if ($request->image_link) {
-                $project->name = $request->name;
+        if (Auth::check()) {
+            $project = Project::find($id);
+            if ($project->id_creator === Auth::user()->id && $project != null) {
+                if ($request->image_link) {
+                    $project->name = $request->name;
+                }
+                if ($request->image_link) {
+                    $project->image_link = $request->image_link;
+                }
+                $project->save();
+                return response()->json($project, 200);
+            } else {
+                return response()->json('Le projet n\'existe pas', 404);
             }
-            if ($request->image_link) {
-                $project->image_link = $request->image_link;
-            }
-            $project->save();
-
-            return "Success updating project #" . $project->id;
-        }else{
-            return response()->json("Ce projet ne vous appartient pas.".Auth::user(), 400);
-        }  
+        } else {
+            return response()->json('Vous n\'êtes pas authorisé à faire ça', 403);
+        }
     }
 
     /**
@@ -135,17 +156,21 @@ class ProjectControllerJson extends Controller
      */
     public function destroy($id)
     {
-        $project = Project::find($id);
-        if ($project == null) {
-            return response()->json('Le projet n\'existe pas', 404);
-        } else {
-            //Si pas une url alors delete du storage
-            if (substr($project->image_link, 0, 4) !== "http") {
-                Storage::delete('public/images/' . $project->image_link);
-            }
+        if (Auth::check() && $project->id_creator === Auth::user()->id) {
+            $project = Project::find($id);
+            if ($project == null) {
+                return response()->json('Le projet n\'existe pas', 404);
+            } else {
+                //Si pas une url alors delete du storage
+                if (substr($project->image_link, 0, 4) !== "http") {
+                    Storage::delete('public/images/' . $project->image_link);
+                }
 
-            $project->delete();
-            return response()->json('Projet supprimé', 200);
+                $project->delete();
+                return response()->json('Projet supprimé', 200);
+            }
+        } else {
+            return response()->json('Vous n\'êtes pas authorisé à faire ça', 403);
         }
     }
 }

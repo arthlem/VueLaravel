@@ -1,7 +1,20 @@
 @extends('layouts.app', ['title' => 'Tous les projets', 'route' => 'projects'])
 
 @section('content')
+  @if (\Session::has('success'))
+    <div class="alert alert-success alert-dismissible">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+      {!! \Session::get('success') !!}
+    </div>
+  @endif
+  @if (\Session::has('error'))
+    <div class="alert alert-danger alert-dismissible">
+      <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+      {!! \Session::get('error') !!}
+    </div>
+  @endif
   <div class="row">
+      
       @foreach($projects as $project)
         <div class="col-xs-12 col-md-4 col-lg-3 d-flex align-items-stretch">     
           <div class="card text-center">

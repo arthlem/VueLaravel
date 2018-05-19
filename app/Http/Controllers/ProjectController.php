@@ -111,6 +111,9 @@ class ProjectController extends Controller
         ]);
 
         $project = Project::find($id);
+        if (auth()->user()->id !== $project->id_creator) {
+            return redirect('/projects')->with('error', 'Pas autorisé');
+        }
 
         if ($request->hasFile('image')) {
             // Get filename with the extension

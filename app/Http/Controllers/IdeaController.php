@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Idea;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Auth;
 
 class IdeaController extends Controller
 {
@@ -26,7 +27,9 @@ class IdeaController extends Controller
      */
     public function store(Request $request)
     {
-
+        if(!Auth::check()){
+            return redirect('/projects/' . $request->get('id_project'))->with('error', 'Pas connecté');
+        }
         $idea = new Idea([
             'text' => $request->get('text'),
             'id_creator' => auth()->user()->id,
@@ -67,6 +70,9 @@ class IdeaController extends Controller
         ]);
 
         $idea = Idea::find($id);
+        if (auth()->user()->id !== $idea->id_creator) {
+            return redirect('/projects/'.$idea->id_project)->with('error', 'Pas autorisé');
+        }
 
         $idea->text = $request->get('text');
 

@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Idea;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 
 class IdeaControllerJson extends Controller
 {
@@ -27,13 +27,28 @@ class IdeaControllerJson extends Controller
      */
     public function store(Request $request)
     {
-        $idea = new Idea([
-            'text' => $request->text,
-            'id_creator' => $request->id_creator,
-            'id_project' => $request->id_project,
-        ]);
-        $idea->save();
-        return response()->json($idea);
+        if (Auth::check()) {
+
+            $validatedData = $request->validate([
+                'text' => 'required',
+                'id_creator' => 'required',
+                'id_project' => 'required',
+            ]);
+
+            if ($validatedData->errors()) {
+                return $validatedData->errors()->toJson();
+            }
+
+            $idea = new Idea([
+                'text' => $request->text,
+                'id_creator' => $request->id_creator,
+                'id_project' => $request->id_project,
+            ]);
+            $idea->save();
+            return response()->json($idea, 200);
+        } else {
+            return response()->json('Vous n\'êtes pas authorisé à faire ça', 403);
+        }
     }
 
     /**
@@ -54,12 +69,31 @@ class IdeaControllerJson extends Controller
     public function update(Request $request, $id)
     {
         $idea = Idea::find($id);
+        if (Auth::check() && $idea->id_creator === Auth::user()->id) {
+            if (!$idea) {
+                return response()->json('L\'idée n\'existe pas', 404);
+            } else {
+                $validatedData = $request->validate([
+                    'text' => 'required',
+                    'id_creator' => 'required',
+                    'id_project' => 'required',
+                ]);
 
-        $idea->text = $request->get('text');
+                if ($validatedData->errors()) {
+                    return $validatedData->errors()->toJson();
+                }
 
-        $idea->save();
+                $idea->text = $request->get('text');
 
-        return "Success updating idea #" . $idea->id;
+                $idea->save();
+
+                return response()->json($idea, 200);
+            }
+
+        } else {
+            return response()->json('Vous n\'êtes pas authorisé à faire ça', 403);
+        }
+
     }
 
     /**
@@ -84,9 +118,12 @@ class IdeaControllerJson extends Controller
         $idea = Idea::find($id);
         if ($idea == null) {
             return response()->json('L\'idée n\'existe pas', 404);
-        } else {
+        } else if (Auth::check() && $idea->id_creator === Auth::user()->id) {
             $idea->delete();
             return response()->json('Idée supprimée', 200);
+
+        } else {
+            return response()->json('Vous n\'êtes pas authorisé à faire ça', 403);
         }
     }
 }
