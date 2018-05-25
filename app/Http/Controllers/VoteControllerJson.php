@@ -16,7 +16,9 @@ class VoteControllerJson extends Controller
      *   @SWG\Parameter(name="value",required=true,in="body",description="valeur positive ou valeur négative",type="integer",@SWG\Schema(@SWG\Property(property="value",type="integer",default="Test"))),
      *   @SWG\Parameter(name="id_idea",required=true,in="body",description="L'id de l'idée",type="integer",@SWG\Schema(@SWG\Property(property="id_idea",type="integer",default="Test"))),
      *   @SWG\Parameter(name="id_user",required=true,in="body",description="L'id de l'utilisateur qui vote",type="integer",@SWG\Schema(@SWG\Property(property="id_user",type="integer",default="Test"))),
-     *   @SWG\Response(response=200, description="Sucess")
+     *   @SWG\Response(response=200, description="Sucess"),
+     *   @SWG\Response(response=403, description="Vous n'êtes pas autorisé à faire ça"),
+     *   @SWG\Response(response=422, description="Il manque des paramètres")
      * )
      *
      * Créer un projet
@@ -32,10 +34,6 @@ class VoteControllerJson extends Controller
                 'id_user' => 'required',
                 'id_idea' => 'required',
             ]);
-
-            if ($validatedData->errors()) {
-                return $validatedData->errors()->toJson();
-            }
 
             Vote::create($request->all());
             return response()->json('Successfully added', 200);

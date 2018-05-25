@@ -17,7 +17,9 @@ class IdeaControllerJson extends Controller
      *   @SWG\Parameter(name="text",required=true,in="body",description="Le texte de l'idée",type="string",@SWG\Schema(@SWG\Property(property="text",type="string",default="Test"))),
      *   @SWG\Parameter(name="id_project",required=true,in="body",description="L'id du projet",type="integer",@SWG\Schema(@SWG\Property(property="id_project",type="integer",default="Test"))),
      *   @SWG\Parameter(name="id_creator",required=true,in="body",description="L'id de l'utilisateur qui ajoute le projet",type="integer",@SWG\Schema(@SWG\Property(property="id_creator",type="integer",default="Test"))),
-     *   @SWG\Response(response=200, description="Retourne le projet avec un id")
+     *   @SWG\Response(response=200, description="Retourne le projet avec un id"),
+     *   @SWG\Response(response=403, description="Vous n'êtes pas autorisé à faire ça"),
+     *   @SWG\Response(response=422, description="Il manque des paramètres")
      * )
      *
      * Créer un projet
@@ -34,10 +36,6 @@ class IdeaControllerJson extends Controller
                 'id_creator' => 'required',
                 'id_project' => 'required',
             ]);
-
-            if ($validatedData->errors()) {
-                return $validatedData->errors()->toJson();
-            }
 
             $idea = new Idea([
                 'text' => $request->text,
@@ -58,7 +56,9 @@ class IdeaControllerJson extends Controller
      *   summary="Modifier une idée",
      *   @SWG\Parameter(name="id",required=true,in="path",description="L'id de l'idée",type="integer",@SWG\Schema(@SWG\Property(property="id",type="integer",default="Test"))),
      *   @SWG\Parameter(name="text",required=true,in="body",description="Le texte de l'idée",type="string",@SWG\Schema(@SWG\Property(property="text",type="string",default="Test"))),
-     *   @SWG\Response(response=200, description="Success")
+     *   @SWG\Response(response=200, description="Success"),
+     *   @SWG\Response(response=403, description="Vous n'êtes pas autorisé à faire ça"),
+     *   @SWG\Response(response=404, description="L'idée n'existe pas")
      * )
      *
      * Modifier une idée via son id
@@ -78,10 +78,6 @@ class IdeaControllerJson extends Controller
                     'id_creator' => 'required',
                     'id_project' => 'required',
                 ]);
-
-                if ($validatedData->errors()) {
-                    return $validatedData->errors()->toJson();
-                }
 
                 $idea->text = $request->get('text');
 
@@ -110,7 +106,8 @@ class IdeaControllerJson extends Controller
      *     minimum=1.0
      *   ),
      *   @SWG\Response(response=200, description="Idée supprimé avec succès"),
-     *   @SWG\Response(response=404, description="Idée introuvable")
+     *   @SWG\Response(response=404, description="Idée introuvable"),
+     *   @SWG\Response(response=403, description="Vous n'êtes pas autorisé à faire ça")
      * )
      */
     public function destroy($id)

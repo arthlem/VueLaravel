@@ -252,6 +252,12 @@
                 "responses": {
                     "200": {
                         "description": "Retourne le projet avec un id"
+                    },
+                    "403": {
+                        "description": "Vous n'\u00eates pas autoris\u00e9 \u00e0 faire \u00e7a"
+                    },
+                    "422": {
+                        "description": "Il manque des param\u00e8tres"
                     }
                 }
             }
@@ -297,6 +303,12 @@
                 "responses": {
                     "200": {
                         "description": "Success"
+                    },
+                    "403": {
+                        "description": "Vous n'\u00eates pas autoris\u00e9 \u00e0 faire \u00e7a"
+                    },
+                    "404": {
+                        "description": "L'id\u00e9e n'existe pas"
                     }
                 }
             },
@@ -324,6 +336,9 @@
                     },
                     "404": {
                         "description": "Id\u00e9e introuvable"
+                    },
+                    "403": {
+                        "description": "Vous n'\u00eates pas autoris\u00e9 \u00e0 faire \u00e7a"
                     }
                 }
             }
@@ -395,6 +410,12 @@
                 "responses": {
                     "200": {
                         "description": "Retourne le projet avec un id"
+                    },
+                    "403": {
+                        "description": "Vous n'\u00eates pas autoris\u00e9 \u00e0 faire \u00e7a"
+                    },
+                    "422": {
+                        "description": "Il manque des param\u00e8tres"
                     }
                 }
             }
@@ -425,6 +446,9 @@
                 "responses": {
                     "200": {
                         "description": "Retourne le projet correspondant \u00e0 l'id en param\u00e8tre"
+                    },
+                    "404": {
+                        "description": "Le projet n'existe pas"
                     }
                 }
             },
@@ -483,6 +507,12 @@
                 "responses": {
                     "200": {
                         "description": "Success"
+                    },
+                    "403": {
+                        "description": "Vous n'\u00eates pas autoris\u00e9 \u00e0 faire \u00e7a"
+                    },
+                    "404": {
+                        "description": "Le projet n'existe pas"
                     }
                 }
             },
@@ -510,6 +540,9 @@
                     },
                     "404": {
                         "description": "Projet introuvable"
+                    },
+                    "403": {
+                        "description": "Vous n'\u00eates pas autoris\u00e9 \u00e0 faire \u00e7a"
                     }
                 }
             }
@@ -570,6 +603,12 @@
                 "responses": {
                     "200": {
                         "description": "Sucess"
+                    },
+                    "403": {
+                        "description": "Vous n'\u00eates pas autoris\u00e9 \u00e0 faire \u00e7a"
+                    },
+                    "422": {
+                        "description": "Il manque des param\u00e8tres"
                     }
                 }
             }

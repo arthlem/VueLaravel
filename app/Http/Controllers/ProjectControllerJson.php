@@ -33,7 +33,9 @@ class ProjectControllerJson extends Controller
      *   @SWG\Parameter(name="name",required=true,in="body",description="Le nom du projet",type="string",@SWG\Schema(@SWG\Property(property="name",type="string",default="Test"))),
      *   @SWG\Parameter(name="image_link",required=true,in="body",description="Le lien de l'image du projet",type="string",@SWG\Schema(@SWG\Property(property="image_link",type="string",default="Test"))),
      *   @SWG\Parameter(name="id_creator",required=true,in="body",description="L'id de l'utilisateur qui ajoute le projet",type="integer",@SWG\Schema(@SWG\Property(property="id_creator",type="integer",default="Test"))),
-     *   @SWG\Response(response=200, description="Retourne le projet avec un id")
+     *   @SWG\Response(response=200, description="Retourne le projet avec un id"),
+     *   @SWG\Response(response=403, description="Vous n'êtes pas autorisé à faire ça"),
+     *   @SWG\Response(response=422, description="Il manque des paramètres")
      * )
      *
      * Créer un projet
@@ -49,10 +51,6 @@ class ProjectControllerJson extends Controller
                 'image_link' => 'required',
                 'id_creator' => 'required',
             ]);
-
-            if ($validatedData->errors()) {
-                return $validatedData->errors()->toJson();
-            }
 
             $project = new Project([
                 'name' => $request->get('name'),
@@ -72,7 +70,8 @@ class ProjectControllerJson extends Controller
      *   tags={"projects"},
      *   summary="Récupérer un projet via son id",
      *   @SWG\Parameter(name="id",required=true,in="path",description="L'id du projet",type="integer",@SWG\Schema(@SWG\Property(property="id",type="integer",default="1"))),
-     *   @SWG\Response(response=200, description="Retourne le projet correspondant à l'id en paramètre")
+     *   @SWG\Response(response=200, description="Retourne le projet correspondant à l'id en paramètre"),
+     *  @SWG\Response(response=404, description="Le projet n'existe pas")
      * )
      *
      * Récupérer un projet via son id
@@ -108,7 +107,9 @@ class ProjectControllerJson extends Controller
      *   @SWG\Parameter(name="id",required=true,in="path",description="L'id du projet",type="integer",@SWG\Schema(@SWG\Property(property="id",type="integer",default="1"))),
      *   @SWG\Parameter(name="name",required=false,in="body",description="Le nom du projet",type="string",@SWG\Schema(@SWG\Property(property="name",type="string",default="Test"))),
      *   @SWG\Parameter(name="image_link",required=false,in="body",description="Le lien de l'image du projet",type="string",@SWG\Schema(@SWG\Property(property="image_link",type="string",default="Test"))),
-     *   @SWG\Response(response=200, description="Success")
+     *   @SWG\Response(response=200, description="Success"),
+     *   @SWG\Response(response=403, description="Vous n'êtes pas autorisé à faire ça"),
+     *   @SWG\Response(response=404, description="Le projet n'existe pas")
      * )
      *
      * Modifier un projet via son id
@@ -151,12 +152,13 @@ class ProjectControllerJson extends Controller
      *     minimum=1.0
      *   ),
      *   @SWG\Response(response=200, description="Projet supprimé avec succès"),
-     *   @SWG\Response(response=404, description="Projet introuvable")
+     *   @SWG\Response(response=404, description="Projet introuvable"),
+     *   @SWG\Response(response=403, description="Vous n'êtes pas autorisé à faire ça")
      * )
      */
     public function destroy($id)
     {
-        if (Auth::check() && $project->id_creator === Auth::user()->id) {
+        if (Auth::check()) {
             $project = Project::find($id);
             if ($project == null) {
                 return response()->json('Le projet n\'existe pas', 404);
